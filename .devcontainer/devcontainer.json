@@ -1,0 +1,51 @@
+{
+  "name": "Python 3",
+  "build": {
+      "dockerfile": "./Dockerfile",
+      "context": "..",
+      "args": {
+          "VARIANT": "3.11"
+      }
+  },
+  "customizations": {
+      "vscode": {
+          "settings": {
+              "terminal.integrated.shell.linux": "/bin/bash",
+              "python.formatting.provider": "black",
+              "python.formatting.blackArgs": [
+                  "--line-length",
+                  "120"
+              ],
+              "editor.formatOnSave": true
+          },
+          "extensions": [
+              "ms-python.python"
+          ]
+      }
+  },
+  "forwardPorts": [
+      5000,
+      5432
+  ],
+  "postCreateCommand": "pip install -r ./requirements.txt && pre-commit install && pre-commit run --all-files",
+  "features": {
+      "ghcr.io/devcontainers/features/docker-in-docker:2": {
+          "moby": true,
+          "azureDnsAutoDetection": true,
+          "installDockerBuildx": true,
+          "installDockerComposeSwitch": true,
+          "version": "latest",
+          "dockerDashComposeVersion": "latest"
+      },
+      "ghcr.io/devcontainers-contrib/features/black:2": {
+          "version": "latest",
+          "args": [
+              "--line-length",
+              "120"
+          ]
+      },
+      "ghcr.io/devcontainers-contrib/features/isort:2": {
+          "version": "latest"
+      }
+  }
+}
