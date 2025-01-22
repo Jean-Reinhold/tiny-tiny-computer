@@ -12,12 +12,11 @@ def test_or_instruction():
     registers = Registers()
 
     # Setup test-specific data
-    memory.store(10, "000005")  # Load a test value at address 10
-    registers.A = 10  # Set accumulator (A) to an initial value
-    registers.PC = 0  # Set the program counter
+    memory.store(10, "000054")  # Load a value at address 10    0x54   (0b001010100)
+    registers.A = 0x84  # Set accumulator (A) to an initial value 0x84 (0b010000100)
 
     # Define the instruction to be tested
-    memory_line = "44" + "000A"  # Example: Opcode 44 + address 000A (hex for 10)
+    memory_line = "44" + "000A"  # Example: Opcode 40 + address 000A (hex for 10)
 
     try:
         # Call the instruction
@@ -25,7 +24,7 @@ def test_or_instruction():
 
         # Assertions to check expected results (you'll refine this as per logic)
         assert (
-            registers.A == 15
-        ), "Accumulator should contain the sum of initial A and memory[10]"
+            registers.A == 212
+        ), f"Accumulator should be equal to {0x54 | 0x84}"
     except NotImplementedError:
-        pytest.fail("OR is not implemented yet.")
+        pytest.fail("AND is not implemented yet.")

@@ -13,4 +13,10 @@ def MUL(memory_line: str, memory: Memory, registers: Registers) -> None:
     :param memory: Memory instance to access or store values.
     :param registers: Registers instance to manipulate CPU registers.
     """
-    raise NotImplementedError("MUL instruction not implemented yet.")
+    address = int(memory_line[2:], 16)  # Convert 4-character hex address to int
+
+    value = int(memory.load(address), 16)  # Memory value is a 6-character hex string
+
+    registers.A *= value
+
+    registers.A &= 0xFFFFFF  # Mask to keep the value within 24 bits

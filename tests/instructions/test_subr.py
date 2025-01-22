@@ -12,12 +12,12 @@ def test_subr():
     registers = Registers()
 
     # Setup test-specific data
-    memory.store(10, "000005")  # Load a test value at address 10
-    registers.A = 10  # Set accumulator (A) to an initial value
-    registers.PC = 0  # Set the program counter
+    registers.X = 10
+    registers.A = 5
 
     # Define the instruction to be tested
-    memory_line = "94" + "000A"  # Example: Opcode 94 + address 000A (hex for 10)
+    # Example: Opcode 94 + registers A and X (00, 01)
+    memory_line = "90" + "0001"
 
     try:
         # Call the instruction
@@ -25,7 +25,7 @@ def test_subr():
 
         # Assertions to check expected results (you'll refine this as per logic)
         assert (
-            registers.A == 15
+            registers.X == 5
         ), "Accumulator should contain the sum of initial A and memory[10]"
     except NotImplementedError:
-        pytest.fail("SUBR is not implemented yet.")
+        pytest.fail("ADDR is not implemented yet.")

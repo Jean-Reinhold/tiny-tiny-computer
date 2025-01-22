@@ -12,12 +12,13 @@ def test_addr():
     registers = Registers()
 
     # Setup test-specific data
-    memory.store(10, "000005")  # Load a test value at address 10
-    registers.A = 10  # Set accumulator (A) to an initial value
     registers.PC = 0  # Set the program counter
+    registers.X = 10
+    registers.A = 5
 
     # Define the instruction to be tested
-    memory_line = "90" + "000A"  # Example: Opcode 90 + address 000A (hex for 10)
+    # Example: Opcode 90 + registers A and X (00, 01)
+    memory_line = "90" + "0001"
 
     try:
         # Call the instruction
@@ -25,7 +26,7 @@ def test_addr():
 
         # Assertions to check expected results (you'll refine this as per logic)
         assert (
-            registers.A == 15
+            registers.X == 15
         ), "Accumulator should contain the sum of initial A and memory[10]"
     except NotImplementedError:
         pytest.fail("ADDR is not implemented yet.")

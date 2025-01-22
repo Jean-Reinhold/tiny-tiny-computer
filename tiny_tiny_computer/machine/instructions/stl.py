@@ -13,4 +13,6 @@ def STL(memory_line: str, memory: Memory, registers: Registers) -> None:
     :param memory: Memory instance to access or store values.
     :param registers: Registers instance to manipulate CPU registers.
     """
-    raise NotImplementedError("STL instruction not implemented yet.")
+    address = int(memory_line[2:], 16)  # Convert 4-character hex address to int
+    value = registers.L
+    memory.store(address, f"{value:06X}")

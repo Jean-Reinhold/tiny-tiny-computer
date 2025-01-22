@@ -12,12 +12,11 @@ def test_mulr():
     registers = Registers()
 
     # Setup test-specific data
-    memory.store(10, "000005")  # Load a test value at address 10
     registers.A = 10  # Set accumulator (A) to an initial value
-    registers.PC = 0  # Set the program counter
+    registers.X = 5   # Set X to an initial value
 
     # Define the instruction to be tested
-    memory_line = "98" + "000A"  # Example: Opcode 98 + address 000A (hex for 10)
+    memory_line = "98" + "0001"  # Example: Opcode 98 + registers A and X
 
     try:
         # Call the instruction
@@ -25,7 +24,7 @@ def test_mulr():
 
         # Assertions to check expected results (you'll refine this as per logic)
         assert (
-            registers.A == 15
-        ), "Accumulator should contain the sum of initial A and memory[10]"
+            registers.X == 50
+        ), "X should contain A (10) * X (5)"
     except NotImplementedError:
         pytest.fail("MULR is not implemented yet.")
