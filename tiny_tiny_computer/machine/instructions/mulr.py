@@ -13,4 +13,11 @@ def MULR(memory_line: str, memory: Memory, registers: Registers) -> None:
     :param memory: Memory instance to access or store values.
     :param registers: Registers instance to manipulate CPU registers.
     """
-    raise NotImplementedError("MULR instruction not implemented yet.")
+
+    # get name of both registers
+    r1 = registers.register_from_code(int(memory_line[2:4], 16))
+    r2 = registers.register_from_code(int(memory_line[4:], 16))
+
+    # sum register (r1) into register (r2)
+    registers[r2] *= registers[r1]
+    registers[r2] &= 0xFFFFFF

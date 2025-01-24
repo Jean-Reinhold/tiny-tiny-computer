@@ -7,25 +7,19 @@ from tiny_tiny_computer.machine.registers import Registers
 
 
 def test_sub():
-    # Initialize Memory and Registers
     memory = Memory(size_in_words=32)
     registers = Registers()
 
     # Setup test-specific data
-    memory.store(10, "000005")  # Load a test value at address 10
-    registers.A = 10  # Set accumulator (A) to an initial value
-    registers.PC = 0  # Set the program counter
+    memory.store(10, "000005")  # Store the value 5 at memory address 10
+    registers.A = 10  # Set the initial value of the accumulator to 10
+    registers.PC = 0  # Program Counter set to 0 (not relevant for this test)
 
-    # Define the instruction to be tested
-    memory_line = "1C" + "000A"  # Example: Opcode 1C + address 000A (hex for 10)
+    memory_line = "1C000A"  # Opcode 18 (ADD) + address 000A (hex for 10)
 
-    try:
-        # Call the instruction
-        SUB(memory_line, memory, registers)
+    SUB(memory_line, memory, registers)
 
-        # Assertions to check expected results (you'll refine this as per logic)
-        assert (
-            registers.A == 15
-        ), "Accumulator should contain the sum of initial A and memory[10]"
-    except NotImplementedError:
-        pytest.fail("SUB is not implemented yet.")
+    assert (
+        registers.A == 5
+    ), "Accumulator should contain the subtraction of initial A and memory[10]"
+    assert memory.load(10) == "000005", "Memory at address 10 should remain unchanged"

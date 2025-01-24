@@ -12,12 +12,11 @@ def test_shiftl():
     registers = Registers()
 
     # Setup test-specific data
-    memory.store(10, "000005")  # Load a test value at address 10
     registers.A = 10  # Set accumulator (A) to an initial value
     registers.PC = 0  # Set the program counter
 
     # Define the instruction to be tested
-    memory_line = "A4" + "000A"  # Example: Opcode A4 + address 000A (hex for 10)
+    memory_line = "A4" + "0004"  # Example: Opcode A4 + register A, and amount 4
 
     try:
         # Call the instruction
@@ -25,7 +24,7 @@ def test_shiftl():
 
         # Assertions to check expected results (you'll refine this as per logic)
         assert (
-            registers.A == 15
-        ), "Accumulator should contain the sum of initial A and memory[10]"
+            registers.A == 160
+        ), f"Accumulator should be equal to 10 << 4 ({10 << 4})"
     except NotImplementedError:
-        pytest.fail("SHIFTL is not implemented yet.")
+        pytest.fail("SHIFTR is not implemented yet.")

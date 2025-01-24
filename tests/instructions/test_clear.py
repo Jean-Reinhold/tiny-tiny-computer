@@ -12,12 +12,10 @@ def test_clear():
     registers = Registers()
 
     # Setup test-specific data
-    memory.store(10, "000005")  # Load a test value at address 10
     registers.A = 10  # Set accumulator (A) to an initial value
-    registers.PC = 0  # Set the program counter
 
     # Define the instruction to be tested
-    memory_line = "B4" + "000A"  # Example: Opcode B4 + address 000A (hex for 10)
+    memory_line = "04" + "00"  # Example: Opcode 04 + register 00 (A)
 
     try:
         # Call the instruction
@@ -25,7 +23,7 @@ def test_clear():
 
         # Assertions to check expected results (you'll refine this as per logic)
         assert (
-            registers.A == 15
-        ), "Accumulator should contain the sum of initial A and memory[10]"
+            registers.A == 0
+        ), "Register A must be cleared (set to 0)"
     except NotImplementedError:
         pytest.fail("CLEAR is not implemented yet.")

@@ -13,4 +13,8 @@ def AND(memory_line: str, memory: Memory, registers: Registers) -> None:
     :param memory: Memory instance to access or store values.
     :param registers: Registers instance to manipulate CPU registers.
     """
-    raise NotImplementedError("AND instruction not implemented yet.")
+    address = int(memory_line[2:], 16)
+    value = int(memory.load(address), 16)
+
+    registers.A &= value
+    registers.A &= 0xFFFFFF  # Mask to keep the value within 24 bits
