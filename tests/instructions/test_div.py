@@ -25,7 +25,7 @@ def test_div():
 
         # Assertions to check expected results (you'll refine this as per logic)
         assert (
-            registers.A == 15
-        ), "Accumulator should contain the sum of initial A and memory[10]"
+            registers.A == 2
+        ), "Accumulator should contain the division of initial A by memory[10]"
     except NotImplementedError:
         pytest.fail("DIV is not implemented yet.")

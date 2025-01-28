@@ -25,7 +25,7 @@ def test_comp():
 
         # Assertions to check expected results (you'll refine this as per logic)
         assert (
-            registers.A == 15
-        ), "Accumulator should contain the sum of initial A and memory[10]"
+            registers.SW == 1
+        ), "Accumulator should contain [-1] if less, [0] if equal or [1] if greater than memory[10]"
     except NotImplementedError:
         pytest.fail("COMP is not implemented yet.")
