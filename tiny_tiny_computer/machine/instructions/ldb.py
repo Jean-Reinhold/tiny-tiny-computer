@@ -13,4 +13,10 @@ def LDB(memory_line: str, memory: Memory, registers: Registers) -> None:
     :param memory: Memory instance to access or store values.
     :param registers: Registers instance to manipulate CPU registers.
     """
-    raise NotImplementedError("LDB instruction not implemented yet.")
+    address = int(memory_line[2:], 16)
+
+    value = int(memory.load(address), 16)
+
+    registers.B = value
+
+    registers.B &= 0xFFFFFF

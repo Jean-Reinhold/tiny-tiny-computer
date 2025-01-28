@@ -25,7 +25,7 @@ def test_ldt():
 
         # Assertions to check expected results (you'll refine this as per logic)
         assert (
-            registers.A == 15
-        ), "Accumulator should contain the sum of initial A and memory[10]"
+            registers.T == 5
+        ), "General use-register 'T' should contain the value stored at memory[10]"
     except NotImplementedError:
         pytest.fail("LDT is not implemented yet.")

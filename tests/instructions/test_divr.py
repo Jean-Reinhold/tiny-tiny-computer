@@ -13,11 +13,12 @@ def test_divr():
 
     # Setup test-specific data
     memory.store(10, "000005")  # Load a test value at address 10
-    registers.A = 10  # Set accumulator (A) to an initial value
+    registers.A = 5  # Set accumulator (A) to an initial value
     registers.PC = 0  # Set the program counter
+    registers.X = 10
 
     # Define the instruction to be tested
-    memory_line = "9C" + "000A"  # Example: Opcode 9C + address 000A (hex for 10)
+    memory_line = "9C" + "0001"  # Example: Opcode 9C + address 000A (hex for 10)
 
     try:
         # Call the instruction
@@ -25,7 +26,7 @@ def test_divr():
 
         # Assertions to check expected results (you'll refine this as per logic)
         assert (
-            registers.A == 15
-        ), "Accumulator should contain the sum of initial A and memory[10]"
+            registers.X == 2
+        ), "X should contain the result of registers[r2] / registers[r1]"
     except NotImplementedError:
         pytest.fail("DIVR is not implemented yet.")
