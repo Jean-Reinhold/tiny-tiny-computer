@@ -17,7 +17,7 @@ def JGT(memory_line: str, memory: Memory, registers: Registers) -> None:
     address = int(memory_line[2:], 16)
 
     # Check if the accumulator is greater than zero
-    if registers.CC == '>':
+    if registers.SW == '>':
         # Set the program counter to the address
         registers.PC = address
     

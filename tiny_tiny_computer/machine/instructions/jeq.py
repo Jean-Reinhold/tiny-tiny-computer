@@ -16,7 +16,7 @@ def JEQ(memory_line: str, memory: Memory, registers: Registers) -> None:
  # Extract the address from the memory line (assuming the address is in hex format)
     address = int(memory_line[2:], 16)
     
-    # Check if the accumulator is zero
-    if registers.CC == '=':
+    # Check if the condition code is set to '='
+    if registers.SW == 0:
         # Set the program counter to the address
         registers.PC = address
