@@ -1,52 +1,24 @@
 import flet as ft
 
-from tiny_tiny_computer.machine.gui.components import (
-    create_assembly_code_input,
-    create_control_buttons,
-    create_cpu_section,
-    create_output_display,
-    create_ram_section,
-)
+from tiny_tiny_computer.machine.gui.components import *
+from tiny_tiny_computer.machine.memory import Memory
 
 
 def machine_ui(page: ft.Page):
     """Main UI function to assemble all components."""
+
     page.title = "Little Man Computer (LMC) Simulator"
     page.scroll = "adaptive"
     page.padding = 20
     page.theme_mode = "light"
 
-    control_buttons = create_control_buttons()
-    assembly_code = create_assembly_code_input()
-    output_display = create_output_display()
-    cpu_section = create_cpu_section()
-    ram_section = create_ram_section()
+    mem = Memory()
 
-    left_column = ft.Column(
-        [
-            control_buttons,
-            assembly_code,
-            output_display,
-        ],
-        spacing=10,
-    )
+    memory_section = create_memory_section(mem, page)
 
-    right_column = ft.Column(
-        [
-            cpu_section,
-            ram_section,
-        ],
-        spacing=10,
-    )
-
-    page.add(
-        ft.Row(
-            [
-                left_column,
-                right_column,
-            ],
-            spacing=20,
-            vertical_alignment="start",
-        )
-    )
+    page.add(memory_section)
     page.update()
+
+
+# To run the app:
+# ft.app(target=machine_ui)

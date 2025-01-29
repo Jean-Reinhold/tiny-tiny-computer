@@ -1,5 +1,8 @@
 import flet as ft
 
+from tiny_tiny_computer.machine.gui.actions import *
+from tiny_tiny_computer.machine.memory import Memory
+
 
 def create_control_buttons():
     """Create the control buttons for the LMC Simulator with sample callbacks."""
@@ -38,100 +41,71 @@ def create_control_buttons():
     )
 
 
-def create_assembly_code_input():
-    """Create the assembly code input text field with a sample callback."""
-    return ft.TextField(
-        multiline=True,
-        value=(
-            "START    INP        ; Input a number\n"
-            "         STA FIRST   ; Store it in FIRST\n"
-            "         INP         ; Input another number\n"
-            "         STA SECOND  ; Store it in SECOND\n"
-            "         LDA FIRST   ; Load FIRST into accumulator\n"
-            "         ADD SECOND  ; Add SECOND to accumulator\n"
-            "         OUT         ; Output the result\n"
-            "         HLT         ; Halt the program\n"
-            "FIRST    DAT 0       ; Memory location for FIRST\n"
-            "SECOND   DAT 0       ; Memory location for SECOND\n"
-        ),
-        width=460,
-        height=645,
-        label="Assembly Code",
-        text_style=ft.TextStyle(size=14),
-        min_lines=40,
-        max_lines=40,
-        on_change=lambda e: print(
-            f"Assembly code changed: {e.control.value}"
-        ),  # You could place your callback here
+def create_memory_section(mem: Memory, page: ft.Page):
+    name_section = ft.Text(
+        "Memória",
+        size=22,
+        weight=ft.FontWeight.W_600,
+        text_align=ft.TextAlign.CENTER,
+        color="#102F44",
     )
 
+    memory_table = create_memory_table(mem, page)
 
-def create_output_display():
-    """Create the output display with a sample callback."""
-    return ft.Container(
-        content=ft.Text("Output: [Placeholder]", size=14),
-        padding=10,
-        border=ft.border.all(1, "black"),
-        border_radius=5,
-        bgcolor="#f9f9f9",
-        width=460,
-        height=200,
+    labels = ft.Row(
+        [
+            ft.Text("Endereço", size=16, weight=ft.FontWeight.W_600, color="#102F44"),
+            ft.Text("Valor", size=16, weight=ft.FontWeight.W_600, color="#102F44"),
+        ],
+        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+        vertical_alignment=ft.CrossAxisAlignment.CENTER,
     )
 
-
-def create_cpu_section():
-    """Create the CPU section with placeholders."""
-    return ft.Container(
-        content=ft.Column(
-            [
-                ft.Text("CPU Registers", size=16, weight="bold"),
-                ft.Text("Program Counter: 00", size=14),
-                ft.Text("Instruction Register: 00", size=14),
-                ft.Text("Accumulator: 000", size=14),
-            ],
-            spacing=10,
-        ),
-        padding=10,
-        border=ft.border.all(1, "black"),
-        border_radius=5,
-        bgcolor="#f9f9f9",
-        width=400,
+    memory_section = ft.Column(
+        [name_section, labels, memory_table],
+        width=200,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )
 
+    return memory_section
 
-def create_ram_section():
-    """Create the RAM section with a sample callback."""
-    ram_cells = [
-        ft.Container(
-            content=ft.Text(f"{i:03}", color="white"),
-            bgcolor="black",
-            alignment=ft.alignment.center,
-            width=50,
-            height=50,
-            border_radius=5,
-            on_click=lambda e, cell=i: print(
-                f"RAM Cell {cell} clicked!"
-            ),  # You could place your callback here
+
+def create_memory_table(mem: Memory, page: ft.Page):
+    memory_list = ft.ListView(spacing=10)
+
+    for i in range(len(mem.memory)):
+        address_text = ft.Text(
+            f"{i:02} ", weight="bold", width=25, size=16, color="#5AB6F3"
         )
-        for i in range(64)  # 8x8
-    ]
-    return ft.Container(
-        content=ft.Column(
-            [
-                ft.Text("RAM (Memory)", size=16, weight="bold"),
-                ft.GridView(
-                    expand=1,
-                    runs_count=8,
-                    max_extent=60,
-                    spacing=5,
-                    run_spacing=5,
-                    controls=ram_cells,
-                ),
-            ]
-        ),
-        padding=10,
-        border=ft.border.all(1, "black"),
-        border_radius=5,
-        bgcolor="#f9f9f9",
-        width=400,
-    )
+
+        instruction_input = ft.TextField(
+            value=mem.load(i),
+            width=80,
+            height=40,
+            content_padding=ft.padding.symmetric(vertical=0, horizontal=10),
+            border_color="#1F5E87",
+            focused_border_color="#5AB6F3",
+            focused_border_width=2,
+            border_radius=5,
+            keyboard_type=ft.KeyboardType.NUMBER,
+            on_change=lambda e, addr=1: update_memory(e, mem, addr, page),
+        )
+
+        row = ft.Row(
+            [address_text, instruction_input],
+            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+            vertical_alignment=ft.CrossAxisAlignment.CENTER,
+        )
+
+        container = ft.Container(
+            content=row,
+            padding=10,
+            border=ft.border.all(1, "#C7D7E1"),
+            border_radius=5,
+            bgcolor="lightgray",
+            height=55,
+        )
+
+        memory_list.controls.append(container)
+
+    return memory_list
