@@ -13,4 +13,10 @@ def JEQ(memory_line: str, memory: Memory, registers: Registers) -> None:
     :param memory: Memory instance to access or store values.
     :param registers: Registers instance to manipulate CPU registers.
     """
-    raise NotImplementedError("JEQ instruction not implemented yet.")
+ # Extract the address from the memory line (assuming the address is in hex format)
+    address = int(memory_line[2:], 16)
+    
+    # Check if the accumulator is zero
+    if registers.CC == '=':
+        # Set the program counter to the address
+        registers.PC = address
