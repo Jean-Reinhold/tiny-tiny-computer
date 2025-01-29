@@ -6,38 +6,50 @@ from tiny_tiny_computer.machine.memory import Memory
 
 def create_control_buttons():
     """Create the control buttons for the LMC Simulator with sample callbacks."""
-    return ft.Row(
+    return ft.Column(
         [
-            ft.ElevatedButton(
-                "Assemble",
-                width=120,
-                on_click=lambda e: print(
-                    "Assemble button clicked!"
-                ),  # You could place your callback here
+            ft.Container(
+                content=ft.Text(
+                    "Run",
+                    size=14,
+                    weight=ft.FontWeight.W_600,
+                    color="#FFFFFF",
+                    text_align=ft.TextAlign.CENTER,
+                ),
+                width=318,
+                padding=ft.padding.symmetric(vertical=10, horizontal=16),
+                bgcolor="#F88443",
+                border_radius=20,
             ),
-            ft.ElevatedButton(
-                "Run",
-                width=100,
-                on_click=lambda e: print(
-                    "Run button clicked!"
-                ),  # You could place your callback here
+            ft.Container(
+                content=ft.Text(
+                    "Step",
+                    size=14,
+                    weight=ft.FontWeight.W_600,
+                    color="#FFFFFF",
+                    text_align=ft.TextAlign.CENTER,
+                ),
+                width=318,
+                padding=ft.padding.symmetric(vertical=10, horizontal=16),
+                bgcolor="#F88443",
+                border_radius=20,
             ),
-            ft.ElevatedButton(
-                "Step",
-                width=100,
-                on_click=lambda e: print(
-                    "Step button clicked!"
-                ),  # You could place your callback here
-            ),
-            ft.ElevatedButton(
-                "Reset",
-                width=100,
-                on_click=lambda e: print(
-                    "Reset button clicked!"
-                ),  # You could place your callback here
+            ft.Container(
+                content=ft.Text(
+                    "Reset",
+                    size=14,
+                    weight=ft.FontWeight.W_600,
+                    color="#FFFFFF",
+                    text_align=ft.TextAlign.CENTER,
+                ),
+                width=318,
+                padding=ft.padding.symmetric(vertical=10, horizontal=16),
+                bgcolor="#D9D9D9",
+                border_radius=20,
             ),
         ],
-        spacing=10,
+        spacing=15,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )
 
 
@@ -83,7 +95,7 @@ def create_memory_table(mem: Memory, page: ft.Page):
             width=80,
             height=40,
             content_padding=ft.padding.symmetric(vertical=0, horizontal=10),
-            border_color="#1F5E87",
+            border_color="#C7D7E1",
             focused_border_color="#5AB6F3",
             focused_border_width=2,
             border_radius=5,
@@ -109,3 +121,39 @@ def create_memory_table(mem: Memory, page: ft.Page):
         memory_list.controls.append(container)
 
     return memory_list
+
+
+def create_main_section(page: ft.Page):
+    calculator = create_calculator()
+
+    return calculator
+
+
+def create_calculator():
+    buttons = create_control_buttons()
+
+    display = ft.TextField(
+        value="0",
+        text_align=ft.TextAlign.RIGHT,
+        read_only=True,
+        border=ft.InputBorder.NONE,
+        bgcolor="#18212C",
+        color="#FFFFFF",
+        text_size=32,
+        width=300,
+        height=80,
+    )
+
+    calculator = ft.Container(
+        content=ft.Column(
+            [display, buttons],
+            spacing=10,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        ),
+        padding=20,
+        bgcolor="#101925",
+        border_radius=10,
+        width=350,
+    )
+
+    return calculator
