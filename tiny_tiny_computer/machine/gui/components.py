@@ -2,6 +2,7 @@ import flet as ft
 
 from tiny_tiny_computer.machine.gui.actions import *
 from tiny_tiny_computer.machine.memory import Memory
+from tiny_tiny_computer.machine.registers import Registers
 
 
 def create_control_buttons():
@@ -123,17 +124,17 @@ def create_memory_table(mem: Memory, page: ft.Page):
     return memory_list
 
 
-def create_main_section(page: ft.Page):
-    calculator = create_calculator()
-
+def create_main_section(page: ft.Page, registers: Registers):
+    accumulator = registers.A
+    calculator = create_calculator(accumulator)
     return calculator
 
 
-def create_calculator():
+def create_calculator(accumulator: int):
     buttons = create_control_buttons()
 
     display = ft.TextField(
-        value="0",
+        value=accumulator,
         text_align=ft.TextAlign.RIGHT,
         read_only=True,
         border=ft.InputBorder.NONE,
@@ -157,3 +158,69 @@ def create_calculator():
     )
 
     return calculator
+
+
+def create_registers_section(registers: Registers):
+    """Create a section to display the registers in a layout similar to the memory table."""
+    registers_table = create_registers_table(registers)
+
+    name_section = ft.Text(
+        "Registradores",
+        size=22,
+        weight=ft.FontWeight.W_600,
+        text_align=ft.TextAlign.CENTER,
+        color="#101925",
+    )
+
+    registers_section = ft.Column(
+        [name_section, registers_table],
+        width=200,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+    )
+
+    return registers_section
+
+
+def create_registers_table(registers: Registers):
+    registers_list = ft.ListView(spacing=10, width=200)
+
+    for code in range(1, 7):
+        register_name = registers.register_from_code(code)
+        register_text = ft.Container(
+            ft.Text(
+                register_name,
+                weight="bold",
+                size=16,
+                color="#FFFFFF",
+            ),
+            padding=16,
+            border_radius=ft.border_radius.only(8, 0, 8, 0),
+            bgcolor="#18212C",
+            width=40,
+        )
+
+        value_text = ft.Container(
+            ft.Text(
+                registers[register_name],
+                size=16,
+                color="#000000",
+                text_align="right",
+            ),
+            padding=16,
+            border_radius=ft.border_radius.only(0, 8, 0, 8),
+            bgcolor="#F88443",
+            width=40,
+        )
+
+        # Row to hold the register name and value
+        row = ft.Row(
+            [register_text, value_text],
+            vertical_alignment=ft.CrossAxisAlignment.CENTER,
+            alignment=ft.MainAxisAlignment.CENTER,
+            spacing=0,
+        )
+
+        # Add the container to the list
+        registers_list.controls.append(row)
+
+    return registers_list
