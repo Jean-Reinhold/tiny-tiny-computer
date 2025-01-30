@@ -127,7 +127,71 @@ def create_memory_table(mem: Memory, page: ft.Page):
 def create_main_section(page: ft.Page, registers: Registers):
     accumulator = registers.A
     calculator = create_calculator(accumulator)
-    return calculator
+    others_registers = create_others_registers(registers)
+
+    main_section = ft.Column(
+        [calculator, others_registers],
+        spacing=60,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+    )
+
+    return main_section
+
+
+def create_others_registers(registers: Registers):
+    label_pc = ft.Container(
+        ft.Text(
+            "PC",
+            weight="bold",
+            size=16,
+            color="#FFFFFF",
+            text_align=ft.TextAlign.CENTER,
+        ),
+        padding=16,
+        border_radius=ft.border_radius.only(8, 0, 0, 0),
+        bgcolor="#18212C",
+        width=80,
+    )
+
+    pc = registers.PC
+    value_pc = ft.Container(
+        ft.Text(pc, size=16, color="#000000", text_align=ft.TextAlign.CENTER),
+        padding=16,
+        border_radius=ft.border_radius.only(0, 0, 8, 0),
+        bgcolor="#D9D9D9",
+        width=80,
+    )
+
+    register_pc = ft.Column([label_pc, value_pc], spacing=0)
+
+    label_sw = ft.Container(
+        ft.Text(
+            "SW",
+            weight="bold",
+            size=16,
+            color="#FFFFFF",
+            text_align=ft.TextAlign.CENTER,
+        ),
+        padding=16,
+        border_radius=ft.border_radius.only(0, 8, 0, 0),
+        bgcolor="#18212C",
+        width=80,
+    )
+
+    sw = registers.SW
+    value_sw = ft.Container(
+        ft.Text(sw, size=16, color="#000000", text_align=ft.TextAlign.CENTER),
+        padding=16,
+        border_radius=ft.border_radius.only(0, 0, 0, 8),
+        bgcolor="#D9D9D9",
+        width=80,
+    )
+
+    register_sw = ft.Column([label_sw, value_sw], spacing=0)
+
+    others_registers = ft.Row([register_pc, register_sw], spacing=0)
+
+    return others_registers
 
 
 def create_calculator(accumulator: int):
