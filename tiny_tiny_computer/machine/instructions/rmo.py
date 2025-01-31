@@ -13,4 +13,9 @@ def RMO(memory_line: str, memory: Memory, registers: Registers) -> None:
     :param memory: Memory instance to access or store values.
     :param registers: Registers instance to manipulate CPU registers.
     """
-    raise NotImplementedError("RMO instruction not implemented yet.")
+    r1 = registers.register_from_code(int(memory_line[2:4], 16))
+    r2 = registers.register_from_code(int(memory_line[4:], 16))
+
+    registers[r2] = registers[r1]
+
+    registers[r2] &= 0xFFFFFF

@@ -15,6 +15,7 @@ def test_tix():
     memory.store(10, "000005")  # Load a test value at address 10
     registers.A = 10  # Set accumulator (A) to an initial value
     registers.PC = 0  # Set the program counter
+    registers.X = 10
 
     # Define the instruction to be tested
     memory_line = "2C" + "000A"  # Example: Opcode 2C + address 000A (hex for 10)
@@ -25,7 +26,7 @@ def test_tix():
 
         # Assertions to check expected results (you'll refine this as per logic)
         assert (
-            registers.A == 15
-        ), "Accumulator should contain the sum of initial A and memory[10]"
+            registers.SW == 1
+        ), "Status Word should be 1, as registers.X + 1 is greather than memory[10] (value = 5)"
     except NotImplementedError:
         pytest.fail("TIX is not implemented yet.")

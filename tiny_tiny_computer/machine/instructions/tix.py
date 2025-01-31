@@ -13,4 +13,19 @@ def TIX(memory_line: str, memory: Memory, registers: Registers) -> None:
     :param memory: Memory instance to access or store values.
     :param registers: Registers instance to manipulate CPU registers.
     """
-    raise NotImplementedError("TIX instruction not implemented yet.")
+    address = int(memory_line[2:], 16)
+
+    value = int(memory.load(address), 16)
+
+    registers.X += 1
+
+    registers.X &= 0xFFFFFF
+
+    if registers.X < value:
+        registers.SW = -1
+    elif registers.X == value:
+        registers.SW = 0
+    else:
+        registers.SW = 1
+
+    registers.SW &= 0xFFFFFF

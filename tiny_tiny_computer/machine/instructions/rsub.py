@@ -13,4 +13,6 @@ def RSUB(memory_line: str, memory: Memory, registers: Registers) -> None:
     :param memory: Memory instance to access or store values.
     :param registers: Registers instance to manipulate CPU registers.
     """
-    raise NotImplementedError("RSUB instruction not implemented yet.")
+    registers.PC = registers.L
+
+    registers.PC &= 0xFFFFFF
