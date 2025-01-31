@@ -25,7 +25,7 @@ def test_lda():
 
         # Assertions to check expected results (you'll refine this as per logic)
         assert (
-            registers.A == 15
-        ), "Accumulator should contain the sum of initial A and memory[10]"
+            registers.A == 5
+        ), "Accumulator should contain the value stored at memory[10]"
     except NotImplementedError:
         pytest.fail("LDA is not implemented yet.")

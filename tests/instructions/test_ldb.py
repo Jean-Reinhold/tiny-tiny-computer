@@ -25,7 +25,7 @@ def test_ldb():
 
         # Assertions to check expected results (you'll refine this as per logic)
         assert (
-            registers.A == 15
-        ), "Accumulator should contain the sum of initial A and memory[10]"
+            registers.B == 5
+        ), "Base register should contain the value stored at memory[10]"
     except NotImplementedError:
         pytest.fail("LDB is not implemented yet.")

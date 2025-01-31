@@ -12,12 +12,12 @@ def test_compr():
     registers = Registers()
 
     # Setup test-specific data
-    memory.store(10, "000005")  # Load a test value at address 10
     registers.A = 10  # Set accumulator (A) to an initial value
     registers.PC = 0  # Set the program counter
+    registers.X = 5
 
     # Define the instruction to be tested
-    memory_line = "A0" + "000A"  # Example: Opcode A0 + address 000A (hex for 10)
+    memory_line = "A0" + "0001"  # Example: Opcode A0 + address 000A (hex for 10)
 
     try:
         # Call the instruction
@@ -25,7 +25,7 @@ def test_compr():
 
         # Assertions to check expected results (you'll refine this as per logic)
         assert (
-            registers.A == 15
-        ), "Accumulator should contain the sum of initial A and memory[10]"
+            registers.SW == 1
+        ), "Status Word (SW) should contain [-1] if less, [0] if equal or [1] if greater than r2"
     except NotImplementedError:
         pytest.fail("COMPR is not implemented yet.")

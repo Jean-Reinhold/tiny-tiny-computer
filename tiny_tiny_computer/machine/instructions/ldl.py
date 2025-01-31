@@ -13,4 +13,10 @@ def LDL(memory_line: str, memory: Memory, registers: Registers) -> None:
     :param memory: Memory instance to access or store values.
     :param registers: Registers instance to manipulate CPU registers.
     """
-    raise NotImplementedError("LDL instruction not implemented yet.")
+    address = int(memory_line[2:], 16)
+
+    value = int(memory.load(address), 16)
+
+    registers.L = value
+
+    registers.L &= 0xFFFFFF
