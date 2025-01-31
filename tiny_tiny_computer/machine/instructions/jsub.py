@@ -13,9 +13,14 @@ def JSUB(memory_line: str, memory: Memory, registers: Registers) -> None:
     :param memory: Memory instance to access or store values.
     :param registers: Registers instance to manipulate CPU registers.
     """
-    # Get the address to jump to (assuming the address is in hex format)
+    # Extract the address from the memory line (assuming the address is in hex format)
     address = int(memory_line[2:], 16)
-    # Save the current program counter to the L register
-    registers.L = registers.PC
+
+    # Save the return address (current PC + 1) in the link register (assuming L is the link register)
+    registers.L = registers.PC + 1
+
     # Set the program counter to the address
     registers.PC = address
+
+    # Update the accumulator with the sum of its initial value and the value at the memory address
+    registers.A += int(memory.load(address), 16)
