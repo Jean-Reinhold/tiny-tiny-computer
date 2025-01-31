@@ -128,14 +128,42 @@ def create_main_section(page: ft.Page, registers: Registers):
     accumulator = registers.A
     calculator = create_calculator(accumulator)
     others_registers = create_others_registers(registers)
+    output_value = 0
+    output_container = create_output_container(output_value)
 
     main_section = ft.Column(
-        [calculator, others_registers],
+        [calculator, others_registers, output_container],
         spacing=60,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )
 
     return main_section
+
+
+def create_output_container(output_value: int):
+    output_container = ft.Container(
+        ft.Text(
+            value=output_value,
+            weight="bold",
+            size=16,
+            color="#FFFFFF",
+            text_align=ft.TextAlign.CENTER,
+        ),
+        width=350,
+        bgcolor="#18212C",
+        border_radius=ft.border_radius.all(12),
+        padding=16,
+    )
+
+    name = ft.Text(
+        "Saída",
+        size=22,
+        weight=ft.FontWeight.W_600,
+        text_align=ft.TextAlign.CENTER,
+        color="#101925",
+    )
+
+    return ft.Column([name, output_container])
 
 
 def create_others_registers(registers: Registers):
