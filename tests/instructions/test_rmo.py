@@ -15,9 +15,10 @@ def test_rmo():
     memory.store(10, "000005")  # Load a test value at address 10
     registers.A = 10  # Set accumulator (A) to an initial value
     registers.PC = 0  # Set the program counter
+    registers.X = 5
 
     # Define the instruction to be tested
-    memory_line = "AC" + "000A"  # Example: Opcode AC + address 000A (hex for 10)
+    memory_line = "AC" + "0001"  # Example: Opcode AC + address 000A (hex for 10)
 
     try:
         # Call the instruction
@@ -25,7 +26,7 @@ def test_rmo():
 
         # Assertions to check expected results (you'll refine this as per logic)
         assert (
-            registers.A == 15
-        ), "Accumulator should contain the sum of initial A and memory[10]"
+            registers.X == 10
+        ), "Registers[r2] should contain the same value as registers[r1]"
     except NotImplementedError:
         pytest.fail("RMO is not implemented yet.")
