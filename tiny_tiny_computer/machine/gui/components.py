@@ -1,14 +1,18 @@
 import flet as ft
 
 from tiny_tiny_computer.machine.gui.actions import *
+from tiny_tiny_computer.machine.gui.popup import Popup
 from tiny_tiny_computer.machine.memory import Memory
 from tiny_tiny_computer.machine.registers import Registers
 
+popup = Popup()
 
-def create_control_buttons():
+
+def create_control_buttons(page: ft.Page):
     """Create the control buttons for the LMC Simulator with sample callbacks."""
     return ft.Column(
         [
+            popup,
             ft.Container(
                 content=ft.Text(
                     "Run",
@@ -31,6 +35,7 @@ def create_control_buttons():
                     text_align=ft.TextAlign.CENTER,
                 ),
                 width=318,
+                on_click=popup.open,
                 padding=ft.padding.symmetric(vertical=10, horizontal=16),
                 bgcolor="#F88443",
                 border_radius=20,
@@ -126,7 +131,7 @@ def create_memory_table(mem: Memory, page: ft.Page):
 
 def create_main_section(page: ft.Page, registers: Registers):
     accumulator = registers.A
-    calculator = create_calculator(accumulator)
+    calculator = create_calculator(page, accumulator)
     others_registers = create_others_registers(registers)
     output_value = 0
     output_container = create_output_container(output_value)
@@ -222,8 +227,8 @@ def create_others_registers(registers: Registers):
     return others_registers
 
 
-def create_calculator(accumulator: int):
-    buttons = create_control_buttons()
+def create_calculator(page: ft.Page, accumulator: int):
+    buttons = create_control_buttons(page)
 
     display = ft.TextField(
         value=accumulator,
