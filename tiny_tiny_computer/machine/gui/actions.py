@@ -11,14 +11,3 @@ def update_memory(e: ft.ControlEvent, mem: Memory, address: int, page: ft.Page):
     mem.store(address, new_value)
 
     page.update()
-
-
-def open_popup(page, popup):
-    popup.overlay.visible = True
-    page.update()
-
-
-def close_popup(page, popup, valor):
-    print(f"Valor digitado: {valor}")
-    popup.overlay.visible = False
-    page.update()
