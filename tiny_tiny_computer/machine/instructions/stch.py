@@ -13,4 +13,11 @@ def STCH(memory_line: str, memory: Memory, registers: Registers) -> None:
     :param memory: Memory instance to access or store values.
     :param registers: Registers instance to manipulate CPU registers.
     """
-    raise NotImplementedError("STCH instruction not implemented yet.")
+   # Extract the address from the memory line (last 4 characters)
+    address = int(memory_line[2:], 16)
+
+    # Load the value from memory at the specified address
+    memory_value = int(memory.load(address), 16)
+
+    # Add the memory value to the accumulator
+    registers.A += memory_value

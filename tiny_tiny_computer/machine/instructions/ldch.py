@@ -13,4 +13,11 @@ def LDCH(memory_line: str, memory: Memory, registers: Registers) -> None:
     :param memory: Memory instance to access or store values.
     :param registers: Registers instance to manipulate CPU registers.
     """
-    raise NotImplementedError("LDCH instruction not implemented yet.")
+    # Extract the address from the memory line (assuming the address is in hex format)
+    address = int(memory_line[2:], 16)
+
+    # Load the value from the memory address
+    value = int(memory.load(address), 16)
+
+    # Update the accumulator with the sum of its initial value and the loaded value
+    registers.A += value
