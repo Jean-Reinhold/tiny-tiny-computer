@@ -4,7 +4,12 @@ class Memory:
 
     def load(self, address: int) -> str:
         """Fetch a memory word as a string."""
-        return self.memory[address]
+        if (
+            0 <= address < len(self.memory)
+        ):  # Verifica se o endereço está dentro dos limites
+            return self.memory[address]
+        else:
+            raise IndexError(f"Invalid memory address: {address}")
 
     def store(self, address: int, value: str):
         """
