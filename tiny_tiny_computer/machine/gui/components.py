@@ -8,7 +8,7 @@ from tiny_tiny_computer.machine.registers import Registers
 popup = Popup()
 
 
-def create_control_buttons(page: ft.Page):
+def create_control_buttons(page: ft.Page, sic, register_controls, memory_controls):
     """Create the control buttons for the LMC Simulator with sample callbacks."""
     return ft.Column(
         [
@@ -35,7 +35,9 @@ def create_control_buttons(page: ft.Page):
                     text_align=ft.TextAlign.CENTER,
                 ),
                 width=318,
-                on_click=popup.open,
+                on_click=lambda _: step_execution(
+                    sic, page, register_controls, memory_controls
+                ),
                 padding=ft.padding.symmetric(vertical=10, horizontal=16),
                 bgcolor="#F88443",
                 border_radius=20,
@@ -59,7 +61,7 @@ def create_control_buttons(page: ft.Page):
     )
 
 
-def create_memory_section(mem: Memory, page: ft.Page):
+def create_memory_section(sic: SICMachine, page: ft.Page, memory_controls: dict):
     name_section = ft.Text(
         "Memória",
         size=22,
@@ -68,7 +70,7 @@ def create_memory_section(mem: Memory, page: ft.Page):
         color="#102F44",
     )
 
-    memory_table = create_memory_table(mem, page)
+    memory_table = create_memory_table(sic, page, memory_controls)
 
     labels = ft.Row(
         [
@@ -88,16 +90,16 @@ def create_memory_section(mem: Memory, page: ft.Page):
     return memory_section
 
 
-def create_memory_table(mem: Memory, page: ft.Page):
+def create_memory_table(sic: SICMachine, page: ft.Page, memory_controls: dict):
     memory_list = ft.ListView(spacing=10)
 
-    for i in range(len(mem.memory)):
+    for i in range(len(sic.memory.memory)):
         address_text = ft.Text(
             f"{i:02} ", weight="bold", width=25, size=16, color="#5AB6F3"
         )
 
         instruction_input = ft.TextField(
-            value=mem.load(i),
+            value=sic.memory.load(i),
             width=80,
             height=40,
             content_padding=ft.padding.symmetric(vertical=0, horizontal=10),
@@ -106,8 +108,11 @@ def create_memory_table(mem: Memory, page: ft.Page):
             focused_border_width=2,
             border_radius=5,
             keyboard_type=ft.KeyboardType.NUMBER,
-            on_change=lambda e, addr=1: update_memory(e, mem, addr, page),
+            on_change=lambda e, addr=i: update_memory(e, sic, addr, page),
         )
+
+        # Armazena a referência do TextField no dicionário de controles
+        memory_controls[i] = instruction_input
 
         row = ft.Row(
             [address_text, instruction_input],
@@ -129,10 +134,10 @@ def create_memory_table(mem: Memory, page: ft.Page):
     return memory_list
 
 
-def create_main_section(page: ft.Page, registers: Registers):
-    accumulator = registers.A
-    calculator = create_calculator(page, accumulator)
-    others_registers = create_others_registers(registers)
+def create_main_section(page: ft.Page, sic, register_controls, memory_controls):
+    registers = sic.registers
+    calculator = create_calculator(page, sic, register_controls, memory_controls)
+    others_registers = create_others_registers(registers, register_controls)
     output_value = 0
     output_container = create_output_container(output_value)
 
@@ -171,7 +176,8 @@ def create_output_container(output_value: int):
     return ft.Column([name, output_container])
 
 
-def create_others_registers(registers: Registers):
+def create_others_registers(registers: Registers, register_controls: dict):
+    # Label e valor do registrador PC
     label_pc = ft.Container(
         ft.Text(
             "PC",
@@ -186,17 +192,24 @@ def create_others_registers(registers: Registers):
         width=80,
     )
 
-    pc = registers.PC
-    value_pc = ft.Container(
-        ft.Text(pc, size=16, color="#000000", text_align=ft.TextAlign.CENTER),
+    value_pc = ft.Text(
+        str(registers.PC),  # Valor inicial de PC
+        size=16,
+        color="#000000",
+        text_align=ft.TextAlign.CENTER,
+    )
+    value_pc_container = ft.Container(
+        value_pc,
         padding=16,
         border_radius=ft.border_radius.only(0, 0, 8, 0),
         bgcolor="#D9D9D9",
         width=80,
     )
 
-    register_pc = ft.Column([label_pc, value_pc], spacing=0)
+    # Registrar PC no dicionário de controles
+    register_controls["PC"] = value_pc
 
+    # Label e valor do registrador SW
     label_sw = ft.Container(
         ft.Text(
             "SW",
@@ -211,24 +224,38 @@ def create_others_registers(registers: Registers):
         width=80,
     )
 
-    sw = registers.SW
-    value_sw = ft.Container(
-        ft.Text(sw, size=16, color="#000000", text_align=ft.TextAlign.CENTER),
+    value_sw = ft.Text(
+        str(registers.SW),  # Valor inicial de SW
+        size=16,
+        color="#000000",
+        text_align=ft.TextAlign.CENTER,
+    )
+    value_sw_container = ft.Container(
+        value_sw,
         padding=16,
         border_radius=ft.border_radius.only(0, 0, 0, 8),
         bgcolor="#D9D9D9",
         width=80,
     )
 
-    register_sw = ft.Column([label_sw, value_sw], spacing=0)
+    # Registrar SW no dicionário de controles
+    register_controls["SW"] = value_sw
 
-    others_registers = ft.Row([register_pc, register_sw], spacing=0)
+    # Combinar os dois registradores
+    others_registers = ft.Row(
+        [
+            ft.Column([label_pc, value_pc_container], spacing=0),
+            ft.Column([label_sw, value_sw_container], spacing=0),
+        ],
+        spacing=0,
+    )
 
     return others_registers
 
 
-def create_calculator(page: ft.Page, accumulator: int):
-    buttons = create_control_buttons(page)
+def create_calculator(page: ft.Page, sic, register_controls, memory_controls):
+    buttons = create_control_buttons(page, sic, register_controls, memory_controls)
+    accumulator = sic.registers.A
 
     display = ft.TextField(
         value=accumulator,
@@ -241,6 +268,8 @@ def create_calculator(page: ft.Page, accumulator: int):
         width=300,
         height=80,
     )
+
+    register_controls["A"] = display
 
     calculator = ft.Container(
         content=ft.Column(
@@ -257,9 +286,9 @@ def create_calculator(page: ft.Page, accumulator: int):
     return calculator
 
 
-def create_registers_section(registers: Registers):
+def create_registers_section(registers: Registers, registers_controls: dict):
     """Create a section to display the registers in a layout similar to the memory table."""
-    registers_table = create_registers_table(registers)
+    registers_table = create_registers_table(registers, registers_controls)
 
     name_section = ft.Text(
         "Registradores",
@@ -278,11 +307,13 @@ def create_registers_section(registers: Registers):
     return registers_section
 
 
-def create_registers_table(registers: Registers):
+def create_registers_table(registers: Registers, register_controls: dict):
+    """Cria a tabela de registradores e inicializa o dicionário de controle para atualização."""
     registers_list = ft.ListView(spacing=10, width=200)
 
     for code in range(1, 7):
         register_name = registers.register_from_code(code)
+
         register_text = ft.Container(
             ft.Text(
                 register_name,
@@ -298,7 +329,7 @@ def create_registers_table(registers: Registers):
 
         value_text = ft.Container(
             ft.Text(
-                registers[register_name],
+                registers[register_name],  # Valor inicial do registrador
                 size=16,
                 color="#000000",
                 text_align="right",
@@ -309,7 +340,9 @@ def create_registers_table(registers: Registers):
             width=40,
         )
 
-        # Row to hold the register name and value
+        # Armazena o Text do value_text no dicionário para futura atualização
+        register_controls[register_name] = value_text.content
+
         row = ft.Row(
             [register_text, value_text],
             vertical_alignment=ft.CrossAxisAlignment.CENTER,
@@ -317,7 +350,6 @@ def create_registers_table(registers: Registers):
             spacing=0,
         )
 
-        # Add the container to the list
         registers_list.controls.append(row)
 
     return registers_list

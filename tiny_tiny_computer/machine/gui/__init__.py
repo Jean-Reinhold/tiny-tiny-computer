@@ -1,8 +1,10 @@
 import flet as ft
 
 from tiny_tiny_computer.machine.gui.components import *
+from tiny_tiny_computer.machine.instruction_mapper import InstructionMapper
 from tiny_tiny_computer.machine.memory import Memory
 from tiny_tiny_computer.machine.registers import Registers
+from tiny_tiny_computer.machine.sic import SICMachine
 
 
 def machine_ui(page: ft.Page):
@@ -13,12 +15,13 @@ def machine_ui(page: ft.Page):
     page.padding = 20
     page.theme_mode = "light"
 
-    mem = Memory()
-    registers = Registers()
+    sic = SICMachine(Memory(), Registers(), InstructionMapper())
+    register_controls = {}
+    memory_controls = {}
 
-    memory_section = create_memory_section(mem, page)
-    main_section = create_main_section(page, registers)
-    registers_section = create_registers_section(registers)
+    memory_section = create_memory_section(sic, page, memory_controls)
+    main_section = create_main_section(page, sic, register_controls, memory_controls)
+    registers_section = create_registers_section(sic.registers, register_controls)
 
     row = ft.Row(
         [memory_section, main_section, registers_section],
