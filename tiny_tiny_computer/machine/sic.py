@@ -50,3 +50,21 @@ class SICMachine:
 
             # TODO: Check what happens if this is a jump instruction
             self.registers.PC += 1  # Increment program counter to the next instruction
+
+    def step(self) -> None:
+        """
+        Execute a single step of the program (fetch-decode-execute cycle).
+        This method is intended for stepping through the program one instruction at a time.
+        """
+        pc: int = self.registers.PC
+        memory_line: str = self.memory.load(pc)
+        print(f"******** Linha da memória: {memory_line} ********")
+
+        if memory_line == "000000":  # HALT instruction
+            return  # Program halted
+
+        opcode: str = memory_line[:2]  # Extract the first two characters as the opcode
+        instruction = self.instruction_mapper.get_instruction(opcode)
+        instruction(memory_line, self.memory, self.registers)
+
+        self.registers.PC += 1  # Increment program counter to the next instruction
