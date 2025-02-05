@@ -16,7 +16,7 @@ class InstructionMapper:
                 module_name = filename[:-3]  # Remove .py
                 opcode = self.get_opcode(module_name.upper())
                 module = importlib.import_module(f"{instructions_dir}.{module_name}")
-                self.instructions[opcode] = getattr(module, module_name.upper())
+                self.instructions[opcode] = getattr(module, module_name.upper(), None)
 
     def get_opcode(self, mnemonic):
         opcode_map = {
@@ -37,7 +37,7 @@ class InstructionMapper:
             "LDCH": "54",
             "LDL": "58",
             "LDX": "5C",
-            "STA": "60",
+            "STA": "0C",
             "STCH": "64",
             "STL": "68",
             "STX": "6C",
