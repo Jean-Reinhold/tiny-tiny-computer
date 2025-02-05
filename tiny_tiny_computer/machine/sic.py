@@ -68,3 +68,10 @@ class SICMachine:
         instruction(memory_line, self.memory, self.registers)
 
         self.registers.PC += 1  # Increment program counter to the next instruction
+
+    def reset(self):
+        for register in vars(self.registers):
+            setattr(self.registers, register, 0)
+
+        for i in range(len(self.memory.memory)):
+            self.memory.store(i, "000000")

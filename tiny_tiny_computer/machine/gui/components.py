@@ -55,6 +55,9 @@ def create_control_buttons(page: ft.Page, sic, register_controls, memory_control
                 padding=ft.padding.symmetric(vertical=10, horizontal=16),
                 bgcolor="#D9D9D9",
                 border_radius=20,
+                on_click=lambda _: reset_execution(
+                    page, sic, register_controls, memory_controls
+                ),
             ),
         ],
         spacing=15,

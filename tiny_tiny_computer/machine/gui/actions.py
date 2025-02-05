@@ -55,3 +55,15 @@ def update_memory_controls(memory, memory_controls: dict, page: ft.Page):
         control.value = memory.load(address)
 
     page.update()
+
+
+def reset_execution(
+    page: ft.Page, sic: SICMachine, register_controls: dict, memory_controls: dict
+):
+    sic.reset()
+
+    update_registers_controls(sic.registers, register_controls, page)
+
+    update_memory_controls(sic.memory, memory_controls, page)
+
+    page.update()
