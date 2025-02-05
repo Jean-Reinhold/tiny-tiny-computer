@@ -25,6 +25,7 @@ def create_control_buttons(page: ft.Page, sic, register_controls, memory_control
                 padding=ft.padding.symmetric(vertical=10, horizontal=16),
                 bgcolor="#F88443",
                 border_radius=20,
+                visible=False,
             ),
             ft.Container(
                 content=ft.Text(
@@ -139,10 +140,10 @@ def create_main_section(page: ft.Page, sic, register_controls, memory_controls):
     calculator = create_calculator(page, sic, register_controls, memory_controls)
     others_registers = create_others_registers(registers, register_controls)
     output_value = 0
-    output_container = create_output_container(output_value)
+    # output_container = create_output_container(output_value)
 
     main_section = ft.Column(
-        [calculator, others_registers, output_container],
+        [calculator, others_registers],
         spacing=60,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )
