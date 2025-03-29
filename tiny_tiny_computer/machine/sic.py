@@ -1,3 +1,5 @@
+from assembler import two_pass_assemble
+from macro_processor import process_file
 from tiny_tiny_computer.machine.instruction_mapper import InstructionMapper
 from tiny_tiny_computer.machine.memory import Memory
 from tiny_tiny_computer.machine.registers import Registers
