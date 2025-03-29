@@ -2,7 +2,7 @@ import flet as ft
 
 
 class Popup(ft.Container):
-    def __init__(self):
+    def __init__(self, on_confirm):
         super().__init__()
 
         self.on_confirm = on_confirm  # Callback para chamar função externa
