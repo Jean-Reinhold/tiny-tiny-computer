@@ -8,7 +8,7 @@ def J(memory_line: str, memory: Memory, registers: Registers) -> None:
     """
     J Instruction:
     Opcode: 3C
-    Action: Implement the specific behavior for J.
+    Action: PC ← m
     :param memory_line: The raw instruction line from memory.
     :param memory: Memory instance to access or store values.
     :param registers: Registers instance to manipulate CPU registers.
@@ -18,6 +18,3 @@ def J(memory_line: str, memory: Memory, registers: Registers) -> None:
 
     # Set the program counter to the address
     registers.PC = address
-
-    # Update the accumulator with the sum of its initial value and the value at the memory address
-    registers.A += int(memory.load(address), 16)

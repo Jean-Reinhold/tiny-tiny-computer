@@ -8,15 +8,26 @@ def SUB(memory_line: str, memory: Memory, registers: Registers) -> None:
     """
     SUB Instruction:
     Opcode: 1C
-    Action: Implement the specific behavior for SUB.
+    Action: A ← (A) - (m..m+2)
     :param memory_line: The raw instruction line from memory.
     :param memory: Memory instance to access or store values.
     :param registers: Registers instance to manipulate CPU registers.
     """
-    address = int(memory_line[2:], 16)  # Convert 4-character hex address to int
+    # Extract the address from the memory line (assuming the address is in hex format)
+    address = int(memory_line[2:], 16)
 
-    value = int(memory.load(address), 16)  # Memory value is a 6-character hex string
+    # Get the value from memory
+    value = int(memory.load(address), 16)
 
-    registers.A -= value
+    # Convert to signed values (24-bit)
+    a_signed = registers.A if registers.A < 0x800000 else registers.A - 0x1000000
+    value_signed = value if value < 0x800000 else value - 0x1000000
 
-    registers.A &= 0xFFFFFF  # Mask to keep the value within 24 bits
+    # Subtract the value from the accumulator
+    result = a_signed - value_signed
+
+    # Convert back to unsigned 24-bit
+    registers.A = result & 0xFFFFFF
+
+    print(f"SUB: {a_signed} - {value_signed} = {result}")
+    print(f"SUB: Result stored in A: {registers.A}")

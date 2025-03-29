@@ -33,43 +33,64 @@ class SICMachine:
         self.memory.load_program(program, start_address)
         self.registers.PC = start_address
 
+    def fetch_instruction(self) -> str:
+        """
+        Fetch the instruction at the current PC address.
+
+        :return: The instruction as a string from memory.
+        """
+        return self.memory.load(self.registers.PC)
+
+    def decode_instruction(self, instruction: str) -> tuple[str, str]:
+        """
+        Decode the instruction into opcode and operand.
+
+        :param instruction: The instruction string to decode.
+        :return: A tuple containing (opcode, operand).
+        """
+        opcode = instruction[:2]
+        operand = instruction[2:]
+        return opcode, operand
+
+    def execute_instruction(self, instruction: str) -> None:
+        """
+        Execute the instruction using the instruction mapper.
+
+        :param instruction: The instruction string to execute.
+        """
+        opcode = instruction[:2]
+        instruction_func = self.instruction_mapper.get_instruction(opcode)
+        instruction_func(instruction, self.memory, self.registers)
+
     def run(self) -> None:
         """
         Run the program loaded into memory using the fetch-decode-execute cycle.
         """
         while True:
-            pc: int = self.registers.PC
-            memory_line: str = self.memory.load(pc)
-
-            if memory_line == "000000":  # HALT instruction
+            instruction = self.fetch_instruction()
+            print(instruction)
+            if instruction == "000000":
                 break
 
-            opcode: str = memory_line[
-                :2
-            ]  # Extract the first two characters as the opcode
-            instruction = self.instruction_mapper.get_instruction(opcode)
-            instruction(memory_line, self.memory, self.registers)
+            self.execute_instruction(instruction)
 
-            # TODO: Check what happens if this is a jump instruction
-            self.registers.PC += 1  # Increment program counter to the next instruction
+            self.registers.PC += 1
+            print(f"PC incrementado automaticamente para: {self.registers.PC}")
 
     def step(self) -> None:
         """
         Execute a single step of the program (fetch-decode-execute cycle).
         This method is intended for stepping through the program one instruction at a time.
         """
-        pc: int = self.registers.PC
-        memory_line: str = self.memory.load(pc)
-        print(f"******** Linha da memória: {memory_line} ********")
+        instruction = self.fetch_instruction()
+        print(f"******** Linha da memória: {instruction} ********")
 
-        if memory_line == "000000":  # HALT instruction
-            return  # Program halted
+        if instruction == "000000":
+            return
 
-        opcode: str = memory_line[:2]  # Extract the first two characters as the opcode
-        instruction = self.instruction_mapper.get_instruction(opcode)
-        instruction(memory_line, self.memory, self.registers)
+        self.execute_instruction(instruction)
 
-        self.registers.PC += 1  # Increment program counter to the next instruction
+        self.registers.PC += 1
 
     def reset(self):
         for register in vars(self.registers):
@@ -77,3 +98,33 @@ class SICMachine:
 
         for i in range(len(self.memory.memory)):
             self.memory.store(i, "000000")
+
+
+def load_obj_file(filename):
+    """
+    Load an object file containing machine code in the format:
+    XXXX YY ZZ (address, opcode, operand) or XXXX YY (address, value)
+
+    Returns a list of parsed lines.
+    """
+    obj_code = []
+    pc = 0
+    try:
+        with open(filename, "r") as file:
+            for line in file:
+                line = line.strip()
+                line = line.split()[1:]
+                if len(line) == 1:
+                    pc += 1
+                    item = "0" * (6 - len(line[0])) + line[0]
+                else:
+                    size = len("".join(line))
+                    item = line[0] + "0" * (6 - size) + line[-1]
+                    print(item)
+
+                if line:
+                    obj_code.append(item)
+        return obj_code, pc
+    except FileNotFoundError as e:
+        print(f"Error: File '{filename}' not found.")
+        raise e
