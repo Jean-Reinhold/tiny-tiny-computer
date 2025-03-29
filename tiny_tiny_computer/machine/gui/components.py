@@ -1,15 +1,64 @@
 import flet as ft
 
+from tiny_tiny_computer.machine.gui import memory_controls, register_controls, sic
 from tiny_tiny_computer.machine.gui.actions import (
-    output,
-    process_file,
     reset_execution,
     step_execution,
     update_memory,
+    update_memory_controls,
+    update_registers_controls,
 )
 from tiny_tiny_computer.machine.gui.popup import Popup
 from tiny_tiny_computer.machine.registers import Registers
-from tiny_tiny_computer.machine.sic import SICMachine
+from tiny_tiny_computer.machine.sic import (
+    SICMachine,
+    load_obj_file,
+    macro_process_file,
+    two_pass_assemble,
+)
+
+
+def process_file(path: str, destination: str, page: ft.Page):
+    global output_text_control
+
+    if destination == "assembler":
+        success = two_pass_assemble(path)
+
+        if success:
+            lst_path = path.split(".")[0] + ".lst"
+            with open(lst_path) as f:
+                output = f.read()
+
+            output_text_control.value = output
+            page.update()
+
+        else:
+            print("Erro ao processar o arquivo: ${path}")
+
+    elif destination == "macro":
+        path_asm = macro_process_file(path)
+        print("---------- Start no processamento da MACRO ----------")
+
+        if path_asm:
+            output_text_control.value = f"Sucesso\nArquivo processado em {path_asm}"
+            page.update()
+        else:
+            print("Erro ao processar a macro")
+
+    elif destination == "load":
+        program, pc = load_obj_file("sample_flatenned.obj")
+
+        print("Loaded program:")
+        for i, instruction in enumerate(program):
+            print(f"{i}: {instruction}")
+
+        sic.load_program(program, 0)
+        sic.registers.PC = pc
+
+        update_memory_controls(sic.memory, memory_controls, page)
+        update_registers_controls(sic.registers, register_controls, page)
+        # page.update()
+
 
 popup = Popup(on_confirm=process_file)
 
@@ -187,24 +236,44 @@ def create_buttons_modal(page: ft.Page):
             text_align=ft.TextAlign.CENTER,
         ),
         width=330,
-        on_click=lambda _: popup.open(destination="macro"),
+        on_click=lambda _: popup.open(destination="macro", page=page),
         padding=ft.padding.symmetric(vertical=10, horizontal=16),
         bgcolor="#F88443",
         border_radius=20,
     )
 
-    return ft.Column([macro_button, assembler_button], spacing=20)
-
-
-def create_output_container():
-    output_container = ft.Container(
-        ft.Text(
-            value=output,
-            weight="bold",
-            size=16,
+    load_button = ft.Container(
+        content=ft.Text(
+            "Load Object File",
+            size=14,
+            weight=ft.FontWeight.W_600,
             color="#FFFFFF",
             text_align=ft.TextAlign.CENTER,
         ),
+        width=330,
+        on_click=lambda _: popup.open(destination="load", page=page),
+        padding=ft.padding.symmetric(vertical=10, horizontal=16),
+        bgcolor="#F88443",
+        border_radius=20,
+    )
+
+    return ft.Column([macro_button, assembler_button, load_button], spacing=20)
+
+
+output_text_control = ft.Text(
+    value="",
+    weight="bold",
+    size=16,
+    color="#FFFFFF",
+    text_align=ft.TextAlign.CENTER,
+)
+
+
+def create_output_container():
+    global output_text_control
+
+    output_container = ft.Container(
+        content=output_text_control,
         width=350,
         bgcolor="#282A36",
         border_radius=ft.border_radius.all(12),

@@ -39,14 +39,19 @@ def two_pass_assemble(filepath: str) -> bool:
             for i, line in enumerate(lines):
                 addr = line_addresses[i]
                 txt_addr = f"{addr:04X}" if addr >= 0 else "----"
-                lf.write(f"{txt_addr}  {line.strip()}\n")
+                lst_line = f"{txt_addr}  {line.strip()}\n"
+                lf.write(lst_line)
+                # output.append(lst_line)  # Acumulando a linha em 'output'
 
             if errors:
                 lf.write("\nErros encontrados:\n")
+                # output.append("\nErros encontrados:\n")  # Acumulando a linha de erro
                 for e in errors:
                     lf.write(e + "\n")
+                    # output.append(e + "\n")  # Acumulando o erro em 'output'
             else:
                 lf.write("\nNenhum erro detectado.\n")
+                # output.append("\nNenhum erro detectado.\n")  # Acumulando a mensagem de sucesso
 
     except OSError:
         from .utils import log_error

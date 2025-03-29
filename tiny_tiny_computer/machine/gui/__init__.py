@@ -1,26 +1,30 @@
 import flet as ft
 
-from tiny_tiny_computer.machine.gui.components import *
 from tiny_tiny_computer.machine.instruction_mapper import InstructionMapper
 from tiny_tiny_computer.machine.memory import Memory
 from tiny_tiny_computer.machine.registers import Registers
 from tiny_tiny_computer.machine.sic import SICMachine
 
-output_text_control = None
+sic = SICMachine(Memory(), Registers(), InstructionMapper())
+memory_controls = {}
+register_controls = {}
+
+from tiny_tiny_computer.machine.gui.components import (
+    create_main_section,
+    create_memory_section,
+    create_registers_section,
+)
 
 
 def machine_ui(page: ft.Page):
     """Main UI function to assemble all components."""
+    global sic, memory_controls, register_controls
 
     page.title = "Little Man Computer (LMC) Simulator"
     page.scroll = "adaptive"
     page.padding = 20
     page.theme_mode = "light"
     page.bgcolor = "#000000"
-
-    sic = SICMachine(Memory(), Registers(), InstructionMapper())
-    register_controls = {}
-    memory_controls = {}
 
     memory_section = create_memory_section(sic, page, memory_controls)
     main_section = create_main_section(page, sic, register_controls, memory_controls)
