@@ -5,7 +5,7 @@ from tiny_tiny_computer.machine.gui.popup import Popup
 from tiny_tiny_computer.machine.memory import Memory
 from tiny_tiny_computer.machine.registers import Registers
 
-popup = Popup()
+popup = Popup(on_confirm=process_file)
 
 
 def create_control_buttons(page: ft.Page, sic, register_controls, memory_controls):
@@ -142,11 +142,11 @@ def create_main_section(page: ft.Page, sic, register_controls, memory_controls):
     registers = sic.registers
     calculator = create_calculator(page, sic, register_controls, memory_controls)
     others_registers = create_others_registers(registers, register_controls)
-    output_value = 0
-    # output_container = create_output_container(output_value)
+    output_value = ""
+    output_container = create_output_container(output_value)
 
     main_section = ft.Column(
-        [calculator, others_registers],
+        [calculator, others_registers, output_container],
         spacing=60,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )
@@ -169,7 +169,24 @@ def create_output_container(output_value: int):
         padding=16,
     )
 
-    name = ft.Text(
+    button = (
+        ft.Container(
+            content=ft.Text(
+                "Adicionar path",
+                size=14,
+                weight=ft.FontWeight.W_600,
+                color="#FFFFFF",
+                text_align=ft.TextAlign.CENTER,
+            ),
+            width=318,
+            on_click=lambda _: popup.open(),
+            padding=ft.padding.symmetric(vertical=10, horizontal=16),
+            bgcolor="#F88443",
+            border_radius=20,
+        ),
+    )
+
+    label = ft.Text(
         "Saída",
         size=22,
         weight=ft.FontWeight.W_600,
@@ -177,7 +194,7 @@ def create_output_container(output_value: int):
         color="#101925",
     )
 
-    return ft.Column([name, output_container])
+    return ft.Column([button, label, output_container])
 
 
 def create_others_registers(registers: Registers, register_controls: dict):

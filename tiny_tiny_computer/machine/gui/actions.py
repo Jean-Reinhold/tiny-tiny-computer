@@ -67,3 +67,7 @@ def reset_execution(
     update_memory_controls(sic.memory, memory_controls, page)
 
     page.update()
+
+
+def process_file(path):
+    print(f"Chamar o assembler para processar o arquivo no path: {path}")

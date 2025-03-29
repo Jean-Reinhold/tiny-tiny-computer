@@ -5,11 +5,22 @@ class Popup(ft.Container):
     def __init__(self):
         super().__init__()
 
+        self.on_confirm = on_confirm  # Callback para chamar função externa
+
         self.visible = False
         self.text_field = ft.TextField(
-            label="Digite a entrada",
+            label="Digite o path",
             focused_border_color="#F88443",
             focused_color="#F88443",
+        )
+
+        self.label_style = (
+            ft.Text(
+                size=14,
+                weight=ft.FontWeight.W_500,
+                color="#101925",
+                text_align=ft.TextAlign.CENTER,
+            ),
         )
 
         self.content = ft.Column(
@@ -18,24 +29,12 @@ class Popup(ft.Container):
                 ft.Row(
                     [
                         ft.ElevatedButton(
-                            content=ft.Text(
-                                "Confirmar",
-                                size=14,
-                                weight=ft.FontWeight.W_500,
-                                color="#101925",
-                                text_align=ft.TextAlign.CENTER,
-                            ),
+                            content=self.label_style("Confirmar"),
                             bgcolor="#F88443",
                             on_click=self.confirm,
                         ),
                         ft.ElevatedButton(
-                            content=ft.Text(
-                                "Fechar",
-                                size=14,
-                                weight=ft.FontWeight.W_500,
-                                color="#101925",
-                                text_align=ft.TextAlign.CENTER,
-                            ),
+                            content=self.label_style("Fechar"),
                             bgcolor="#D9D9D9",
                             on_click=self.close,
                         ),
@@ -62,5 +61,9 @@ class Popup(ft.Container):
         self.update()
 
     def confirm(self, e=None):
-        print(f"Usuário digitou: {self.text_field.value}")
+        if self.on_confirm:
+            print(f"Usuário digitou: {self.text_field.value}")
+            self.on_confirm(
+                self.text_field.value
+            )  # Através do callback vai chamar a process_file (método da actions)
         self.close()
