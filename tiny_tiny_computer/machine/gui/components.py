@@ -3,6 +3,7 @@ import flet as ft
 from tiny_tiny_computer.machine.gui import memory_controls, register_controls, sic
 from tiny_tiny_computer.machine.gui.actions import (
     reset_execution,
+    run_execution,
     step_execution,
     update_memory,
     update_memory_controls,
@@ -67,7 +68,6 @@ def create_control_buttons(page: ft.Page, sic, register_controls, memory_control
     """Create the control buttons for the LMC Simulator with sample callbacks."""
     return ft.Column(
         [
-            popup,
             ft.Container(
                 content=ft.Text(
                     "Run",
@@ -76,11 +76,13 @@ def create_control_buttons(page: ft.Page, sic, register_controls, memory_control
                     color="#FFFFFF",
                     text_align=ft.TextAlign.CENTER,
                 ),
+                on_click=lambda _: run_execution(
+                    sic, page, register_controls, memory_controls
+                ),
                 width=318,
                 padding=ft.padding.symmetric(vertical=10, horizontal=16),
                 bgcolor="#F88443",
                 border_radius=20,
-                visible=False,
             ),
             ft.Container(
                 content=ft.Text(
@@ -142,7 +144,7 @@ def create_memory_section(sic: SICMachine, page: ft.Page, memory_controls: dict)
 
     memory_section = ft.Column(
         [name_section, labels, memory_table],
-        width=200,
+        width=350,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )
 
@@ -178,6 +180,7 @@ def create_memory_table(sic: SICMachine, page: ft.Page, memory_controls: dict):
             [address_text, instruction_input],
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
             vertical_alignment=ft.CrossAxisAlignment.CENTER,
+            width=350,
         )
 
         container = ft.Container(
@@ -187,6 +190,7 @@ def create_memory_table(sic: SICMachine, page: ft.Page, memory_controls: dict):
             border_radius=5,
             bgcolor="#282A36",
             height=55,
+            width=350,
         )
 
         memory_list.controls.append(container)
@@ -198,17 +202,27 @@ def create_main_section(page: ft.Page, sic, register_controls, memory_controls):
     registers = sic.registers
     calculator = create_calculator(page, sic, register_controls, memory_controls)
     others_registers = create_others_registers(registers, register_controls)
-    output_container = create_output_container()
-
-    buttons = create_buttons_modal(page)
 
     main_section = ft.Column(
-        [calculator, others_registers, buttons, output_container, popup],
+        [others_registers, calculator],
         spacing=60,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )
 
     return main_section
+
+
+def create_macro_section(page: ft.Page):
+    output_container = create_output_container()
+
+    buttons = create_buttons_modal(page)
+
+    return ft.Column(
+        [buttons, output_container, popup],
+        spacing=60,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        width=350,
+    )
 
 
 def create_buttons_modal(page: ft.Page):
@@ -220,7 +234,7 @@ def create_buttons_modal(page: ft.Page):
             color="#FFFFFF",
             text_align=ft.TextAlign.CENTER,
         ),
-        width=330,
+        width=350,
         on_click=lambda _: popup.open(destination="assembler", page=page),
         padding=ft.padding.symmetric(vertical=10, horizontal=16),
         bgcolor="#F88443",
@@ -235,7 +249,7 @@ def create_buttons_modal(page: ft.Page):
             color="#FFFFFF",
             text_align=ft.TextAlign.CENTER,
         ),
-        width=330,
+        width=350,
         on_click=lambda _: popup.open(destination="macro", page=page),
         padding=ft.padding.symmetric(vertical=10, horizontal=16),
         bgcolor="#F88443",
@@ -250,7 +264,7 @@ def create_buttons_modal(page: ft.Page):
             color="#FFFFFF",
             text_align=ft.TextAlign.CENTER,
         ),
-        width=330,
+        width=350,
         on_click=lambda _: popup.open(destination="load", page=page),
         padding=ft.padding.symmetric(vertical=10, horizontal=16),
         bgcolor="#F88443",
@@ -306,7 +320,7 @@ def create_others_registers(registers: Registers, register_controls: dict):
         padding=16,
         border_radius=ft.border_radius.only(8, 0, 0, 0),
         bgcolor="#282A36",
-        width=80,
+        width=175,
     )
 
     value_pc = ft.Text(
@@ -320,7 +334,7 @@ def create_others_registers(registers: Registers, register_controls: dict):
         padding=16,
         border_radius=ft.border_radius.only(0, 0, 8, 0),
         bgcolor="#D9D9D9",
-        width=80,
+        width=175,
     )
 
     # Registrar PC no dicionário de controles
@@ -338,7 +352,7 @@ def create_others_registers(registers: Registers, register_controls: dict):
         padding=16,
         border_radius=ft.border_radius.only(0, 8, 0, 0),
         bgcolor="#282A36",
-        width=80,
+        width=175,
     )
 
     value_sw = ft.Text(
@@ -352,7 +366,7 @@ def create_others_registers(registers: Registers, register_controls: dict):
         padding=16,
         border_radius=ft.border_radius.only(0, 0, 0, 8),
         bgcolor="#D9D9D9",
-        width=80,
+        width=175,
     )
 
     # Registrar SW no dicionário de controles
@@ -372,7 +386,7 @@ def create_others_registers(registers: Registers, register_controls: dict):
 
 def create_calculator(page: ft.Page, sic, register_controls, memory_controls):
     buttons = create_control_buttons(page, sic, register_controls, memory_controls)
-    accumulator = sic.registers.A
+    accumulator = str(sic.registers.A)
 
     display = ft.TextField(
         value=accumulator,
@@ -417,7 +431,7 @@ def create_registers_section(registers: Registers, registers_controls: dict):
 
     registers_section = ft.Column(
         [name_section, registers_table],
-        width=200,
+        width=166,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )
 
@@ -441,7 +455,7 @@ def create_registers_table(registers: Registers, register_controls: dict):
             padding=16,
             border_radius=ft.border_radius.only(8, 0, 8, 0),
             bgcolor="#282A36",
-            width=40,
+            width=83,
         )
 
         value_text = ft.Container(
@@ -454,7 +468,7 @@ def create_registers_table(registers: Registers, register_controls: dict):
             padding=16,
             border_radius=ft.border_radius.only(0, 8, 0, 8),
             bgcolor="#F88443",
-            width=40,
+            width=83,
         )
 
         # Armazena o Text do value_text no dicionário para futura atualização

@@ -1,3 +1,5 @@
+import time
+
 import flet as ft
 
 from tiny_tiny_computer.machine.registers import Registers
@@ -11,6 +13,16 @@ def update_memory(e: ft.ControlEvent, sic: SICMachine, address: int, page: ft.Pa
     sic.memory.store(address, value)
 
     page.update()
+
+
+def run_execution(
+    sic: SICMachine, page: ft.Page, register_controls: dict, memory_controls: dict
+):
+    for instruction in sic.step_run():
+        print(instruction)
+        update_memory_controls(sic.memory, memory_controls, page)
+        update_registers_controls(sic.registers, register_controls, page)
+        time.sleep(0.8)
 
 
 def step_execution(

@@ -22,6 +22,7 @@ class SICMachine:
         self.memory: Memory = memory
         self.registers: Registers = registers
         self.instruction_mapper: InstructionMapper = instruction_mapper
+        self.current_instruction = ""
 
     def load_program(self, program: list[str], start_address: int = 0) -> None:
         """
@@ -83,6 +84,7 @@ class SICMachine:
         This method is intended for stepping through the program one instruction at a time.
         """
         instruction = self.fetch_instruction()
+        self.current_instruction = instruction
         print(f"******** Linha da memória: {instruction} ********")
 
         if instruction == "000000":
@@ -98,6 +100,22 @@ class SICMachine:
 
         for i in range(len(self.memory.memory)):
             self.memory.store(i, "000000")
+
+    def step_run(self) -> None:
+        """
+        Run the program loaded into memory using the fetch-decode-execute cycle.
+        """
+        while True:
+            instruction = self.fetch_instruction()
+            self.current_instruction = instruction
+            if instruction == "000000":
+                break
+
+            self.execute_instruction(instruction)
+
+            self.registers.PC += 1
+            print(f"PC incrementado automaticamente para: {self.registers.PC}")
+            yield instruction
 
 
 def load_obj_file(filename):
