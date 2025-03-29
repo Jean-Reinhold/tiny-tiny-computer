@@ -1,8 +1,9 @@
 import flet as ft
 
-from tiny_tiny_computer.machine.memory import Memory
 from tiny_tiny_computer.machine.registers import Registers
-from tiny_tiny_computer.machine.sic import SICMachine
+from tiny_tiny_computer.machine.sic import SICMachine, two_pass_assemble
+
+output = []
 
 
 def update_memory(e: ft.ControlEvent, sic: SICMachine, address: int, page: ft.Page):
@@ -69,5 +70,20 @@ def reset_execution(
     page.update()
 
 
-def process_file(path):
-    print(f"Chamar o assembler para processar o arquivo no path: {path}")
+def process_file(path: str, destination: str, page: ft.Page):
+    global output
+
+    if destination == "assembler":
+        sucess = two_pass_assemble(path)
+
+        if sucess:
+            lst_path = path.split(".")[0] + ".lst"
+            with open(lst_path) as f:
+                output = f.read()
+
+            print(output)
+            page.controls[4].content.value = output
+            page.update()
+
+        else:
+            print("Erro ao processar o arquivo: ${path}")

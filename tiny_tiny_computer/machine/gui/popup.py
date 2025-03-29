@@ -14,27 +14,30 @@ class Popup(ft.Container):
             focused_color="#F88443",
         )
 
-        self.label_style = (
-            ft.Text(
-                size=14,
-                weight=ft.FontWeight.W_500,
-                color="#101925",
-                text_align=ft.TextAlign.CENTER,
-            ),
-        )
-
         self.content = ft.Column(
             [
                 self.text_field,
                 ft.Row(
                     [
                         ft.ElevatedButton(
-                            content=self.label_style("Confirmar"),
+                            content=ft.Text(
+                                "Confirmar",
+                                size=14,
+                                weight=ft.FontWeight.W_500,
+                                color="#101925",
+                                text_align=ft.TextAlign.CENTER,
+                            ),
                             bgcolor="#F88443",
                             on_click=self.confirm,
                         ),
                         ft.ElevatedButton(
-                            content=self.label_style("Fechar"),
+                            content=ft.Text(
+                                "Fechar",
+                                size=14,
+                                weight=ft.FontWeight.W_500,
+                                color="#101925",
+                                text_align=ft.TextAlign.CENTER,
+                            ),
                             bgcolor="#D9D9D9",
                             on_click=self.close,
                         ),
@@ -52,7 +55,9 @@ class Popup(ft.Container):
         self.border_radius = 10
         self.width = 300
 
-    def open(self, e=None):
+    def open(self, destination=None, page=None):
+        self.destination = destination
+        self.page = page
         self.visible = True
         self.update()
 
@@ -62,8 +67,7 @@ class Popup(ft.Container):
 
     def confirm(self, e=None):
         if self.on_confirm:
-            print(f"Usuário digitou: {self.text_field.value}")
             self.on_confirm(
-                self.text_field.value
+                self.text_field.value, self.destination, self.page
             )  # Através do callback vai chamar a process_file (método da actions)
         self.close()

@@ -1,9 +1,15 @@
 import flet as ft
 
-from tiny_tiny_computer.machine.gui.actions import *
+from tiny_tiny_computer.machine.gui.actions import (
+    output,
+    process_file,
+    reset_execution,
+    step_execution,
+    update_memory,
+)
 from tiny_tiny_computer.machine.gui.popup import Popup
-from tiny_tiny_computer.machine.memory import Memory
 from tiny_tiny_computer.machine.registers import Registers
+from tiny_tiny_computer.machine.sic import SICMachine
 
 popup = Popup(on_confirm=process_file)
 
@@ -71,15 +77,15 @@ def create_memory_section(sic: SICMachine, page: ft.Page, memory_controls: dict)
         size=22,
         weight=ft.FontWeight.W_600,
         text_align=ft.TextAlign.CENTER,
-        color="#102F44",
+        color="#FFFFFF",
     )
 
     memory_table = create_memory_table(sic, page, memory_controls)
 
     labels = ft.Row(
         [
-            ft.Text("Endereço", size=16, weight=ft.FontWeight.W_600, color="#102F44"),
-            ft.Text("Valor", size=16, weight=ft.FontWeight.W_600, color="#102F44"),
+            ft.Text("Endereço", size=16, weight=ft.FontWeight.W_600, color="#FFFFFF"),
+            ft.Text("Valor", size=16, weight=ft.FontWeight.W_600, color="#FFFFFF"),
         ],
         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
         vertical_alignment=ft.CrossAxisAlignment.CENTER,
@@ -99,7 +105,7 @@ def create_memory_table(sic: SICMachine, page: ft.Page, memory_controls: dict):
 
     for i in range(len(sic.memory.memory)):
         address_text = ft.Text(
-            f"{i:02} ", weight="bold", width=25, size=16, color="#5AB6F3"
+            f"{i:02} ", weight="bold", width=25, size=16, color="#FFFFFF"
         )
 
         instruction_input = ft.TextField(
@@ -107,10 +113,11 @@ def create_memory_table(sic: SICMachine, page: ft.Page, memory_controls: dict):
             width=80,
             height=40,
             content_padding=ft.padding.symmetric(vertical=0, horizontal=10),
-            border_color="#C7D7E1",
-            focused_border_color="#5AB6F3",
+            border_color="#2E303B",
+            focused_border_color="#F88443",
             focused_border_width=2,
             border_radius=5,
+            color="#FFFFFF",
             keyboard_type=ft.KeyboardType.NUMBER,
             on_change=lambda e, addr=i: update_memory(e, sic, addr, page),
         )
@@ -127,9 +134,9 @@ def create_memory_table(sic: SICMachine, page: ft.Page, memory_controls: dict):
         container = ft.Container(
             content=row,
             padding=10,
-            border=ft.border.all(1, "#C7D7E1"),
+            border=ft.border.all(1, "#282A36"),
             border_radius=5,
-            bgcolor="lightgray",
+            bgcolor="#282A36",
             height=55,
         )
 
@@ -142,11 +149,12 @@ def create_main_section(page: ft.Page, sic, register_controls, memory_controls):
     registers = sic.registers
     calculator = create_calculator(page, sic, register_controls, memory_controls)
     others_registers = create_others_registers(registers, register_controls)
-    output_value = ""
-    output_container = create_output_container(output_value)
+    output_container = create_output_container()
+
+    buttons = create_buttons_modal(page)
 
     main_section = ft.Column(
-        [calculator, others_registers, output_container],
+        [calculator, others_registers, buttons, output_container, popup],
         spacing=60,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )
@@ -154,36 +162,53 @@ def create_main_section(page: ft.Page, sic, register_controls, memory_controls):
     return main_section
 
 
-def create_output_container(output_value: int):
+def create_buttons_modal(page: ft.Page):
+    assembler_button = ft.Container(
+        content=ft.Text(
+            "Assembler Process",
+            size=14,
+            weight=ft.FontWeight.W_600,
+            color="#FFFFFF",
+            text_align=ft.TextAlign.CENTER,
+        ),
+        width=330,
+        on_click=lambda _: popup.open(destination="assembler", page=page),
+        padding=ft.padding.symmetric(vertical=10, horizontal=16),
+        bgcolor="#F88443",
+        border_radius=20,
+    )
+
+    macro_button = ft.Container(
+        content=ft.Text(
+            "Macro Process",
+            size=14,
+            weight=ft.FontWeight.W_600,
+            color="#FFFFFF",
+            text_align=ft.TextAlign.CENTER,
+        ),
+        width=330,
+        on_click=lambda _: popup.open(destination="macro"),
+        padding=ft.padding.symmetric(vertical=10, horizontal=16),
+        bgcolor="#F88443",
+        border_radius=20,
+    )
+
+    return ft.Column([macro_button, assembler_button], spacing=20)
+
+
+def create_output_container():
     output_container = ft.Container(
         ft.Text(
-            value=output_value,
+            value=output,
             weight="bold",
             size=16,
             color="#FFFFFF",
             text_align=ft.TextAlign.CENTER,
         ),
         width=350,
-        bgcolor="#18212C",
+        bgcolor="#282A36",
         border_radius=ft.border_radius.all(12),
         padding=16,
-    )
-
-    button = (
-        ft.Container(
-            content=ft.Text(
-                "Adicionar path",
-                size=14,
-                weight=ft.FontWeight.W_600,
-                color="#FFFFFF",
-                text_align=ft.TextAlign.CENTER,
-            ),
-            width=318,
-            on_click=lambda _: popup.open(),
-            padding=ft.padding.symmetric(vertical=10, horizontal=16),
-            bgcolor="#F88443",
-            border_radius=20,
-        ),
     )
 
     label = ft.Text(
@@ -191,10 +216,12 @@ def create_output_container(output_value: int):
         size=22,
         weight=ft.FontWeight.W_600,
         text_align=ft.TextAlign.CENTER,
-        color="#101925",
+        color="#FFFFFF",
     )
 
-    return ft.Column([button, label, output_container])
+    return ft.Column(
+        [label, output_container],
+    )
 
 
 def create_others_registers(registers: Registers, register_controls: dict):
@@ -209,7 +236,7 @@ def create_others_registers(registers: Registers, register_controls: dict):
         ),
         padding=16,
         border_radius=ft.border_radius.only(8, 0, 0, 0),
-        bgcolor="#18212C",
+        bgcolor="#282A36",
         width=80,
     )
 
@@ -241,7 +268,7 @@ def create_others_registers(registers: Registers, register_controls: dict):
         ),
         padding=16,
         border_radius=ft.border_radius.only(0, 8, 0, 0),
-        bgcolor="#18212C",
+        bgcolor="#282A36",
         width=80,
     )
 
@@ -283,7 +310,7 @@ def create_calculator(page: ft.Page, sic, register_controls, memory_controls):
         text_align=ft.TextAlign.RIGHT,
         read_only=True,
         border=ft.InputBorder.NONE,
-        bgcolor="#18212C",
+        bgcolor="#2E303B",
         color="#FFFFFF",
         text_size=32,
         width=300,
@@ -299,7 +326,7 @@ def create_calculator(page: ft.Page, sic, register_controls, memory_controls):
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         ),
         padding=20,
-        bgcolor="#101925",
+        bgcolor="#282A36",
         border_radius=10,
         width=350,
     )
@@ -316,7 +343,7 @@ def create_registers_section(registers: Registers, registers_controls: dict):
         size=22,
         weight=ft.FontWeight.W_600,
         text_align=ft.TextAlign.CENTER,
-        color="#101925",
+        color="#FFFFFF",
     )
 
     registers_section = ft.Column(
@@ -344,7 +371,7 @@ def create_registers_table(registers: Registers, register_controls: dict):
             ),
             padding=16,
             border_radius=ft.border_radius.only(8, 0, 8, 0),
-            bgcolor="#18212C",
+            bgcolor="#282A36",
             width=40,
         )
 

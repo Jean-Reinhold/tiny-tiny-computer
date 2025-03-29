@@ -6,6 +6,8 @@ from tiny_tiny_computer.machine.memory import Memory
 from tiny_tiny_computer.machine.registers import Registers
 from tiny_tiny_computer.machine.sic import SICMachine
 
+output_text_control = None
+
 
 def machine_ui(page: ft.Page):
     """Main UI function to assemble all components."""
@@ -14,6 +16,7 @@ def machine_ui(page: ft.Page):
     page.scroll = "adaptive"
     page.padding = 20
     page.theme_mode = "light"
+    page.bgcolor = "#000000"
 
     sic = SICMachine(Memory(), Registers(), InstructionMapper())
     register_controls = {}
