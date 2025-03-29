@@ -124,7 +124,6 @@ def _match_params(formals, real_args, param_stacks):
         normalized_formal = _normalize_param(formal)
         if i < len(real_args):
             candidate = _normalize_param(real_args[i])
-            # now 'formal' and 'candidate' are stored without '&'
             link[normalized_formal] = (
                 param_stacks[candidate][-1]
                 if (candidate in param_stacks and param_stacks[candidate])

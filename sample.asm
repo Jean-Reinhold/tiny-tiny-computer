@@ -1,8 +1,5 @@
-OLDER   CONST   0
-OLD     CONST   1
-NEW     CONST   0
-LIMIT   CONST   100
-LOOP    CONST   5
+MACRO
+FIBONACCI
         ADD     OLDER
         STA     NEW
         LDA     NEW
@@ -12,6 +9,16 @@ LOOP    CONST   5
         STA     OLDER
         LDA     NEW
         STA     OLD
-        J      LOOP
+        J       LOOP
+MEND
+
+OLDER   CONST   0
+OLD     CONST   1
+NEW     CONST   0
+LIMIT   CONST   100
+LOOP    CONST   5
+
+        FIBONACCI
+        
 FINAL   STOP
         END
