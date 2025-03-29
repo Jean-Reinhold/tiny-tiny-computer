@@ -1,7 +1,13 @@
 import re
 from typing import List
 
-from assembler.config import DIRECTIVES, ERRORS, MAX_LINE_LEN, MAX_TOKENS, MNEMONICS
+from assembler.assembler.config import (
+    DIRECTIVES,
+    ERRORS,
+    MAX_LINE_LEN,
+    MAX_TOKENS,
+    MNEMONICS,
+)
 
 
 def is_label(token: str) -> bool:

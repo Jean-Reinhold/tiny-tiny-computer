@@ -1,8 +1,8 @@
 import os
 from typing import List
 
-from .pass_one import pass_one
-from .pass_two import pass_two
+from assembler.assembler.pass_one import pass_one
+from assembler.assembler.pass_two import pass_two
 
 
 def two_pass_assemble(filepath: str) -> bool:

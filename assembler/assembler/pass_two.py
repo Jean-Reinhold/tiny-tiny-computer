@@ -1,7 +1,7 @@
 from typing import Dict, List
 
-from assembler.config import MNEMONICS
-from assembler.utils import is_label, log_error
+from assembler.assembler.config import MNEMONICS
+from assembler.assembler.utils import is_label, log_error
 
 
 def pass_two(

@@ -1,7 +1,7 @@
 from typing import Dict, List, Tuple
 
-from assembler.config import DIRECTIVES, MNEMONICS
-from assembler.utils import is_label, log_error, validate_line
+from assembler.assembler.config import DIRECTIVES, MNEMONICS
+from assembler.assembler.utils import is_label, log_error, validate_line
 
 
 def pass_one(lines: List[str], errors: List[str]) -> Tuple[Dict[str, int], List[int]]:
