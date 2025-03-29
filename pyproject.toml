@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "tiny-tiny-computer"
+version = "0.1.0"
+description = "A Flet-based simulator"
+authors = ["Your Name <your.email@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+flet = "^0.9.0"
+pre-commit = "^3.0"
+black = "^23.9b0"
+isort = "^5.12.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+
+[build-system]
+requires = ["poetry-core>=1.4.0"]
+build-backend = "poetry.core.masonry.api"
