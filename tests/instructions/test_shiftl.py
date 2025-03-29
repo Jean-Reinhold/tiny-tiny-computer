@@ -23,8 +23,6 @@ def test_shiftl():
         SHIFTL(memory_line, memory, registers)
 
         # Assertions to check expected results (you'll refine this as per logic)
-        assert (
-            registers.A == 160
-        ), f"Accumulator should be equal to 10 << 4 ({10 << 4})"
+        assert registers.A == 160, f"Accumulator should be equal to 10 << 4 ({10 << 4})"
     except NotImplementedError:
         pytest.fail("SHIFTR is not implemented yet.")

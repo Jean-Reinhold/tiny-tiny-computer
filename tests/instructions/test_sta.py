@@ -17,8 +17,6 @@ def test_sta():
     try:
         STA(memory_line, memory, registers)
 
-        assert (
-            memory.load(10) == "00000A"
-        ), "memory should be set to 10"
+        assert memory.load(10) == "00000A", "memory should be set to 10"
     except NotImplementedError:
         pytest.fail("STA is not implemented yet.")

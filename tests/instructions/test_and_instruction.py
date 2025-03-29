@@ -23,8 +23,6 @@ def test_and_instruction():
         AND(memory_line, memory, registers)
 
         # Assertions to check expected results (you'll refine this as per logic)
-        assert (
-            registers.A == 4
-        ), f"Accumulator should be equal to {0x54 & 0x84}"
+        assert registers.A == 4, f"Accumulator should be equal to {0x54 & 0x84}"
     except NotImplementedError:
         pytest.fail("AND is not implemented yet.")

@@ -24,8 +24,6 @@ def test_mul():
         MUL(memory_line, memory, registers)
 
         # Assertions to check expected results (you'll refine this as per logic)
-        assert (
-            registers.A == 50
-        ), "Accumulator should countain A * 0x0A memory (5)"
+        assert registers.A == 50, "Accumulator should countain A * 0x0A memory (5)"
     except NotImplementedError:
         pytest.fail("MUL is not implemented yet.")

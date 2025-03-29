@@ -13,7 +13,7 @@ def JGT(memory_line: str, memory: Memory, registers: Registers) -> None:
     :param memory: Memory instance to access or store values.
     :param registers: Registers instance to manipulate CPU registers.
     """
-   # Extract the address from the memory line (assuming the address is in hex format)
+    # Extract the address from the memory line (assuming the address is in hex format)
     address = int(memory_line[2:], 16)
 
     # Check if the condition code is greater than (assuming 1 represents greater than)

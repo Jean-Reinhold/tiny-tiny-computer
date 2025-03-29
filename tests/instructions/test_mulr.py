@@ -13,7 +13,7 @@ def test_mulr():
 
     # Setup test-specific data
     registers.A = 10  # Set accumulator (A) to an initial value
-    registers.X = 5   # Set X to an initial value
+    registers.X = 5  # Set X to an initial value
 
     # Define the instruction to be tested
     memory_line = "98" + "0001"  # Example: Opcode 98 + registers A and X
@@ -23,8 +23,6 @@ def test_mulr():
         MULR(memory_line, memory, registers)
 
         # Assertions to check expected results (you'll refine this as per logic)
-        assert (
-            registers.X == 50
-        ), "X should contain A (10) * X (5)"
+        assert registers.X == 50, "X should contain A (10) * X (5)"
     except NotImplementedError:
         pytest.fail("MULR is not implemented yet.")

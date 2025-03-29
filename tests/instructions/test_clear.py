@@ -22,8 +22,6 @@ def test_clear():
         CLEAR(memory_line, memory, registers)
 
         # Assertions to check expected results (you'll refine this as per logic)
-        assert (
-            registers.A == 0
-        ), "Register A must be cleared (set to 0)"
+        assert registers.A == 0, "Register A must be cleared (set to 0)"
     except NotImplementedError:
         pytest.fail("CLEAR is not implemented yet.")
