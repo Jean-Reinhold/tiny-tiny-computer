@@ -1,13 +1,17 @@
 import os
 import sys
 
-# Add the project root to Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
 from tiny_tiny_computer.machine.instruction_mapper import InstructionMapper
 from tiny_tiny_computer.machine.memory import Memory
 from tiny_tiny_computer.machine.registers import Registers
-from tiny_tiny_computer.machine.sic import SICMachine, load_obj_file, two_pass_assemble
+from tiny_tiny_computer.machine.sic import (
+    SICMachine,
+    load_obj_file,
+    process_file,
+    two_pass_assemble,
+)
 
 
 def main():
@@ -16,7 +20,7 @@ def main():
     instruction_mapper = InstructionMapper()
     sic = SICMachine(memory, registers, instruction_mapper)
 
-    program, pc = load_obj_file("sample.obj")
+    program, pc = load_obj_file("sample_flatenned.obj")
 
     print("Loaded program:")
     for i, instruction in enumerate(program):
@@ -42,5 +46,6 @@ def main():
 
 
 if __name__ == "__main__":
-    two_pass_assemble(filepath="sample.asm")
+    process_file(input_file="sample.asm")
+    two_pass_assemble(filepath="sample_flatenned.asm")
     main()
