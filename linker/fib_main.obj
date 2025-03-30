@@ -1,0 +1,14 @@
+EXTERN OLDER    ; External reference to OLDER in module 1
+EXTERN OLD       ; External reference to OLD in module 1
+EXTERN NEW       ; External reference to NEW in module 1
+EXTERN LOOP      ; External reference to LOOP in module 1
+
+0000 50 01    ; LDA OLD
+0001 0C 00    ; STA OLDER
+0002 50 02    ; LDA NEW
+0003 0C 01    ; STA OLD
+0004 3C 04    ; J LOOP
+FINAL 0B 00   ; FINAL: STOP
+
+EXPORT FINAL     ; Export FINAL symbol
+END
