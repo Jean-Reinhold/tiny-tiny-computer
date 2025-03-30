@@ -279,7 +279,7 @@ output_text_control = ft.Text(
     weight="bold",
     size=16,
     color="#FFFFFF",
-    text_align=ft.TextAlign.CENTER,
+    text_align=ft.TextAlign.LEFT,
 )
 
 
